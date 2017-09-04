@@ -171,19 +171,6 @@ function showOptions() {
 }
 
 /**
- *	Http get request for the url specified
- * @param {Object} theUrl
- */
-function httpGet( theUrl ) { // DELETE this shouldn't even work
-	var xmlHttp = new XMLHttpRequest();
-		xmlHttp.open( "GET", theUrl, false );
-		xmlHttp.send( null );
-		xmlHttp.overrideMimeType( 'text/xml' );
-
-	return xmlHttp.responseText;
-}
-
-/**
  *	Checks the message provided in XML format
  * @param {Object} xml1
  */

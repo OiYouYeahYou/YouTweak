@@ -25,13 +25,6 @@ function batchWatchedRemoval_init( settings ) {
 }
 
 /**
- *	Adds a remove all watched button to the left context bar.
- */
-function initremoveAllWatchedVideos() { // DELETE
-	addButton_MenuItem( "Clear watched videos", removeWatched );
-}
-
-/**
  *	Removes all watched videos on the page. This is used by the automated system option.
  */
 function autoRemoveWatched() {
@@ -85,55 +78,4 @@ function removeWatched( scrollToTop, cb ) {
 	}
 
 	if ( typeof cb == 'function' ) cb();
-}
-
-/**
- * Remove all watched videos from the homescreen.
- * @param {Object} scrollToTop : Boolean - scroll to top of page after.
- */
-function removeAllWatched_old( scrollToTop, cb ) { // DELETE
-	//Find all the video elements
-	var videoItems = find_AllFeedVideos();
-
-	var removeWatchedInterval = setInterval( function () {
-		console.log( "Removed video: " + videoItems.length + " left." );
-		var video = videoItems.pop();
-		var watched = find_FeedVideoWatchedBadge( video );
-		if ( watched != null ) {
-			//Video has been watched
-
-			//get the hide button
-			var vidHideBtn = find_FeedVideoHideButton( video );
-			vidHideBtn.click();
-
-			//get dismissal notice
-			video.remove();
-
-			//update return
-			removedVideos = true;
-		}
-		if ( videoItems.length <= 0 ) {
-			console.log( "Clearing interval" );
-			clearInterval( removeWatchedInterval );
-
-			//Invoke callback if its there
-			if ( typeof cb == 'function' ) cb();
-		}
-	}, 0 );
-
-	if ( scrollToTop != false ) {
-		//scroll to top
-		try {
-			window.scrollTo( 0, 0 );
-		} catch ( e ) {
-			console.log( "scroll error..." );
-		}
-	}
-}
-
-/**
- * Get the watched badge for a video element.
- */
-function find_FeedVideoWatchedBadge( videoElement ) { // DELETE
-	return searchAllChildrenFor( videoElement, "class", "watched-badge", true )
 }

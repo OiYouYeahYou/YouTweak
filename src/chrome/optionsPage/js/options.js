@@ -376,16 +376,6 @@ function isValidURL( url ) {
 	return RegExp.test( url );
 }
 
-function restoreTxt() { // DELETE
-	setValue( "iconURL", subsFeedURL );
-}
-
-function editTxt() { // DELETE
-	byid( "editTxt" ).setAttribute( "disabled", "true" );
-	byid( "resetTxt" ).removeAttribute( "disabled" );
-	byid( "iconURL" ).removeAttribute( "disabled" );
-}
-
 function toggleDeleteWatchedVidsAutomatic() {
 	// TODO: convert to classList based function and propagate
 	var autoDeleteWatched = byid( 'deleteWatchedVidsAutomated' );
@@ -395,21 +385,6 @@ function toggleDeleteWatchedVidsAutomatic() {
 	else
 		autoDeleteWatched.setAttribute( "disabled", "true" );
 }
-
-function contactShow() { // DELETE
-	//	byid("emf-form").removeAttribute("style");
-	window.open( "http://about.mattie432.com", '_newtab' );
-}
-
-function toggleEnabled( c ) { // DELETE
-	if ( c.getAttribute( "disabled" ) )
-		c.removeAttribute( "disabled" );
-	else
-		c.setAttribute( "disabled", "true" );
-}
-
-// convert string to boolean
-function stringToBoolean( str ) { return str == "true"; } // DELETE
 
 function byid( id ) { return document.getElementById( id ); }
 function elemChecked( id ) { return document.getElementById( id ).checked; }

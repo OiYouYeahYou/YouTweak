@@ -119,31 +119,6 @@ function addButton_ToggleCollapse( appendTo, i, shelf, startCollapsed ) {
 	appendTo.appendChild( label );
 }
 
-function findNameOfFeedList( feedsList ) { // DELETE
-	console.log( findFeedListTitleBar( feedsList ) );
-	return findFeedListTitleBar( feedsList )[0].innerText;
-}
-
-function findFeedListTitleBar( feedsList ) { // DELETE
-	return feedsList.getElementsByClassName( 'branded-page-module-title-text' );
-
-	return searchAllChildrenFor(
-		feedsList,
-		"class",
-		"branded-page-module-title-text",
-		true
-	);
-}
-
-function findFeedListContentDiv( feedsList ) { // DELETE
-	return searchAllChildrenFor(
-		feedsList,
-		"class",
-		"multirow-shelf",
-		true
-	);
-}
-
 function isHiddenByDefault( text ) {
 	return (
 		collapseStartOldHidden

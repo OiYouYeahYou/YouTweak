@@ -1,62 +1,79 @@
 /**
+ * Adds a `remove` to each video in subs feed
+ *
  * Created by Mattie432 on 24/04/2016.
+ * Refactored by OiYouYeahYou on 2017/09/02
+ * TODO: Update to new layout
  */
-var KeyArray	=	[ 'deleteSubsBtn' ];
 
-getStoredChromeSettings( KeyArray, init );
+getStoredChromeSettings( 'deleteSubsBtn', setting_Removal );
 
 /*
- *  Initial startup method for the class.
- *  @param returnedSettings : Object - returned settings.
+ * Initial startup method for the class.
+ * @param returnedSettings : Object - returned settings.
  */
-function init( returnedSettings ) {
-    if (returnedSettings.deleteSubsBtn) {
+function setting_Removal( settings ) {
+	if ( !settings.deleteSubsBtn ) return;
 
-        //Add css styles to the page
-        addCSSRemoveVideoButton();
+	// Add css styles to the page
+	addCSSRemoveVideoButton();
 
-        //Run now to add to those currently in view.
-        initRemoveSingleVideo();
+	// Add removal btn
+	initRemoveSingleVideo();
 
-        //Add a listener for a new page of videos being added.
-        addListener_LoadMoreVideos( initRemoveSingleVideo, "Adding more remove buttons.");
-    }
+	// New video elements listener
+	addListener_LoadMoreVideos(
+		initRemoveSingleVideo,
+		"Adding more remove buttons."
+	);
 }
 
 function addCSSRemoveVideoButton() {
-    var sheet = addCSS_Sheet();
-    addCSS_Rule(sheet, ".contains-addto:hover .video-actions-leftAlign",
-        "right: 172px;",
-        0
-    );
+	var sheet = addCSS_Sheet();
 
-    addCSS_Rule(sheet, ".addto-button-Delete:before",
-        "background: no-repeat url(//s.ytimg.com/yts/imgbin/www-hitchhiker-vflsIkBw3.webp) -60px -1008px;" +
-        "background-size: auto;" +
-        "height: 13px;" +
-        "width: 13px;"
-        ,0
-    );
+	addCSS_Rule(
+		sheet
+		, ".contains-addto:hover .video-actions-leftAlign"
+		, "right: 172px;"
+	);
+
+	addCSS_Rule(
+		sheet
+		, ".addto-button-Delete:before"
+		, "background: no-repeat url(//s.ytimg.com/yts/imgbin/www-hitchhiker-vflsIkBw3.webp) -60px -1008px;"
+		+ "background-size: auto;"
+		+ "height: 13px;"
+		+ "width: 13px;"
+	);
 }
 
 /*
 *	Adds a remove button to all videos on the homepage.
 */
 function initRemoveSingleVideo() {
-    //Find all the video elements
-    var videoItems = find_AllFeedVideos();
+	// Find all the video elements
+	var videoItems = find_AllFeedVideos();
 
-    //For each video
-    for (var i = 0; i < videoItems.length; i++) {
-        if (videoItems[i].lastChild.tagName !== "DONE") {
-            //get the hide button
-            var vidHideBtn = find_FeedVideoHideButton(videoItems[i]);
+	// For each video
+	for ( var i = 0; i < videoItems.length; i++ ) {
+		var item = videoItems[ i ];
 
-            //Add the btn to the video
-            addButton_RemoveVideo(videoItems[i], vidHideBtn);
-        }
-    }
+		if ( item.hasAttribute( 'youtweak-processed' ) ) continue;
 
+		// Place where the new btn will be added.
+		var appendTo = item.getElementsByClassName( 'contains-addto' )[ 0 ];
+		if ( !appendTo ) continue;
+
+		var clickableHideBtn = find_FeedVideoHideButton( item );
+		if ( !clickableHideBtn ) continue;
+
+		appendTo.appendChild(
+			createButton_RemoveVideo2( clickableHideBtn, item )
+		);
+
+		// Used to signify that this video has already had a btn added.
+		item.setAttribute( 'youtweak-processed', 'true' );
+	}
 }
 
 /**
@@ -65,96 +82,87 @@ function initRemoveSingleVideo() {
  * @param {Object} videoElement : li element - expects the li of the video on the homepage
  * @param {Object} clickableHideBtn : element - expects the hideBtn of that video.
  */
-function addButton_RemoveVideo(videoElement, clickableHideBtn) {
+function addButton_RemoveVideo( item ) { // DELETE
+	// Place where the new btn will be added.
+	var appendTo = item.getElementsByClassName( 'contains-addto' )[ 0 ];
+	if ( !appendTo ) return false;
+	var clickableHideBtn = find_FeedVideoHideButton( item );
+	if ( !clickableHideBtn ) return false;
 
-    //Place where the new btn will be added.
-    var appendTo = find_RemoveButtonAppendLocation(videoElement);
+	var btn = createButton_RemoveVideo2( clickableHideBtn, item );
 
-    var btn = createButton_RemoveVideo2();
-    //Used to signify that this video has already had a btn added.
-    var doneSpan = document.createElement("DONE");
-    var dismissalNotice = find_FeedVideoDismissalMessage(videoElement);
+	// Used to signify that this video has already had a btn added.
+	// TODO: use custom attribute instead of node spam
+	var doneSpan = document.createElement( "DONE" );
 
-    //The div that surrounds the btn, used for css placement
-    var enclosingDiv = document.createElement("div");
-    enclosingDiv.className = "enclosingDiv";
-    enclosingDiv.style.height = "20px";
-    enclosingDiv.appendChild(btn);
+	// The div that surrounds the btn, used for css placement DELETE
+	var enclosingDiv = document.createElement( "div" );
+		enclosingDiv.className = "enclosingDiv";
+		enclosingDiv.style.height = "20px";
+		enclosingDiv.appendChild( btn );
 
-    btn.onclick = function() {
-
-        try {
-            clickableHideBtn.click();
-            videoElement.remove();
-
-        } catch(ex) {
-            console.log("Error clicking remove button.");
-        }
-        //clickableHideBtn.click();
-        // btn.remove();
-        dismissalNotice.remove();
-    };
-
-    appendTo.appendChild(btn);
-    videoElement.appendChild(doneSpan);
+	appendTo.appendChild( btn );
+	item.appendChild( doneSpan );
 }
 
 /**
  * Find the location to append the rmo
  */
-function find_RemoveButtonAppendLocation(videoElement){
-    var returnVal = searchAllChildrenFor(videoElement, "class", "contains-addto", true);
-    if( undefinedVariable(returnVal)) {
-        returnVal = null;
-    }
+function find_RemoveButtonAppendLocation( videoElem ) { // DELETE
+	var elem = videoElem.getElementsByClassName( 'contains-addto' );
 
-    //Check the value & return if we found something
-    if( undefinedVariable(returnVal)) {
-        throw "findFeedVideoHideButton returned null.";
-    } else {
-        return returnVal;
-    }
+	if ( elem.length > 0 )
+		return elem[ 0 ]
 }
 
 /**
  *	Creates a remove button element.
  * @return {element} - remove button object.
  */
-function createButton_RemoveVideo1() {
-    var btn = document.createElement("input");
-    btn.type = "button";
-    btn.className = "RemoveVideo";
-    btn.value = "Remove Video";
-    btn.style.cursor = "pointer";
-    btn.style.fontFamily = "arial,sans-serif";
-    btn.style.fontWeight = "bold";
-    btn.style.fontSize = "11px";
+function createButton_RemoveVideo1() { // DELETE
+	var btn = document.createElement( "input" );
+		btn.type = "button";
+		btn.className = "RemoveVideo";
+		btn.value = "Remove Video";
+		btn.style.cursor = "pointer";
+		btn.style.fontFamily = "arial,sans-serif";
+		btn.style.fontWeight = "bold";
+		btn.style.fontSize = "11px";
 
-    // Style
-    btn.style.marginTop = "1px";
-    btn.style.position = "absolute";
-    btn.style.right = "10px";
-    btn.style.bottom = "10px";
+		// Style
+		btn.style.marginTop = "1px";
+		btn.style.position = "absolute";
+		btn.style.right = "10px";
+		btn.style.bottom = "10px";
 
 
-    btn.style.height = "20";
-    btn.style.width = "75";
-    btn.style.backgroundColor = "#B51D1D";
-    btn.style.color = "#fff";
-    //btn.style.marginLeft = "420px";
+		btn.style.height = "20";
+		btn.style.width = "75";
+		btn.style.backgroundColor = "#B51D1D";
+		btn.style.color = "#fff";
+		// btn.style.marginLeft = "420px";
 
-    return btn;
+	return btn;
 }
 
-function createButton_RemoveVideo2() {
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.id = "THisIsTheRighOne";
-    btn.style.width = "20px";
-    btn.style.height = "20px";
-    btn.style.padding = "0px";
-    btn.setAttribute("data-tooltip-text", "Delete Video");
-    btn.className = "yt-uix-button yt-uix-button-size-small yt-uix-button-default yt-uix-button-empty yt-uix-button-has-icon video-actions no-icon-markup spf-nolink hide-until-delayloaded yt-uix-tooltip video-actions-leftAlign addto-button-Delete";
-    //addto-button addto-queue-button addto-tv-queue-button video-actions
-    return btn;
+function createButton_RemoveVideo2( clickableHideBtn, videoElement ) {
+	var btn = document.createElement( "button" );
+		btn.type = "button";
+		btn.id = "THisIsTheRighOne";
+		btn.style.width = "20px";
+		btn.style.height = "20px";
+		btn.style.padding = "0px";
+		btn.setAttribute( "data-tooltip-text", "Delete Video" );
+		btn.onclick = function () {
+			try {
+				clickableHideBtn.click();
+				videoElement.remove();
+			}
+			catch ( ex ) { console.log( "Error clicking remove button." ); }
+
+			videoElement.remove();
+		};
+		btn.className = "yt-uix-button yt-uix-button-size-small yt-uix-button-default yt-uix-button-empty yt-uix-button-has-icon video-actions no-icon-markup spf-nolink hide-until-delayloaded yt-uix-tooltip video-actions-leftAlign addto-button-Delete youtweak-btn-removal";
+		// addto-button addto-queue-button addto-tv-queue-button video-actions
+	return btn;
 }

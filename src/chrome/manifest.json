@@ -1,7 +1,7 @@
  {
 
   "name": "YouTweak for YouTube\u2122 - Subscription Manager",
-  "version": "4.108",
+  "version": "4.108.1",
   "manifest_version": 2,
 
   "options_page": "/OptionsPage/options.html",

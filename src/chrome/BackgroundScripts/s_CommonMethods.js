@@ -18,7 +18,7 @@ function getStoredChromeSettings( KeyArray, cb ) {
 	 */
 	function settingRetrieval( items ) {
 		if ( !items )
-			throw "There was a problem retrieving saved settings from google.";
+			throw new Error( "There was a problem retrieving saved settings from google." )
 
 		//See whats retrieved from chrome storage.
 		// var options = [];
@@ -65,7 +65,7 @@ function find_AllFeedVideos() {
 
 	if ( videoList ) return videoList;
 
-	throw "findAllFeedVideos returned null.";
+	throw new Error( "findAllFeedVideos returned null." );
 }
 
 /**
@@ -84,7 +84,7 @@ function find_FeedVideoHideButton( videoElement ) {
 	if ( elem )
 		return elem
 
-	else throw "find_FeedVideoHideButton returned null.";
+	else throw new Error( "find_FeedVideoHideButton returned null.");
 }
 
 /**

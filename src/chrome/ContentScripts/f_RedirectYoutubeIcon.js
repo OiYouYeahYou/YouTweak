@@ -18,7 +18,12 @@ function redirect_init( s ) {
 	var url = s.iconURLTxt == null || s.iconURLTxt == 'undefined'
 		? defaultURL : s.iconURLTxt;
 
-	document.getElementById( "logo-container" ).setAttribute( "href", url );
+	var logo = document.getElementById( "logo-container" );
+
+	if ( !logo ) logo = document.getElementsByClassName( 'ytd-topbar-logo-renderer' ).logo;
+	if ( !logo ) throw new Error( 'Cannot find logo anchor' );
+
+	logo.href = url;
 
 	var areas = document.getElementsByTagName( "area" );
 

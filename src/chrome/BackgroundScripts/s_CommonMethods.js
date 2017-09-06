@@ -13,6 +13,7 @@
  */
 function getStoredChromeSettings( KeyArray, cb ) {
 	chrome.storage.sync.get( KeyArray, settingRetrieval );
+
 	/**
 	 * Handles the retrieval of settings
 	 */
@@ -20,15 +21,17 @@ function getStoredChromeSettings( KeyArray, cb ) {
 		if ( !items )
 			throw new Error( "There was a problem retrieving saved settings from google." )
 
-		//See whats retrieved from chrome storage.
-		// var options = [];
-		// for ( var key in items )
-		// 	if ( key in items )
-		// 		options.push( key );
+		if ( typeof cb !== 'function' )
+			throw new Error( 'Callback is not function' );
 
-		// console.log( items );
-
-			}
+		setTimeout(
+			function () {
+				// QUESTION Do we need to wrap this in a try-catch? Dev tools should log uncaught errors anyway
+				try { cb( items ); }
+				catch ( err ) { console.error( err ); }
+			},
+			5 * 1000
+		);
 	}
 }
 

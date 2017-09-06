@@ -29,4 +29,6 @@ function redirect_init( s ) {
 
 	for ( var i = 0; i < areas.length; i++ )
 		areas[ i ].setAttribute( "href", url );
+
+	return true;
 }
